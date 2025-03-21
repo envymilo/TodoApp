@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Database=TodoDb;User=sa;Password=12345;TrustServerCertificate=True
+    networks:
+      - app_network
+
+  db:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: sqlserver
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "YourPassword!"
+      ACCEPT_EULA: "Y"
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
